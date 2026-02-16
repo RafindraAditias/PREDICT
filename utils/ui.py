@@ -24,10 +24,11 @@ def inject_css():
         font-size: 0.82rem;
         border: 1px solid rgba(15, 23, 42, 0.10);
       }
-      .pill.good { background: rgba(34,197,94,0.14); color: #166534; }
-      .pill.moderate { background: rgba(245,158,11,0.18); color: #92400E; }
-      .pill.unhealthy { background: rgba(239,68,68,0.14); color: #991B1B; }
-      .pill.hazardous { background: rgba(127,29,29,0.14); color: #7F1D1D; }
+      .pill.baik { background: rgba(34,197,94,0.14); color: #166534; }
+      .pill.sedang { background: rgba(245,158,11,0.18); color: #92400E; }
+      .pill.tidak-sehat { background: rgba(251,191,36,0.18); color: #78350F; }
+      .pill.sangat-tidak-sehat { background: rgba(239,68,68,0.14); color: #991B1B; }
+      .pill.berbahaya { background: rgba(127,29,29,0.14); color: #7F1D1D; }
       [data-testid="stDataFrame"] { border-radius: 16px; overflow: hidden; border: 1px solid rgba(15, 23, 42, 0.08); }
       div[data-testid="stMetric"] {
         background: #FFFFFF;
@@ -40,11 +41,30 @@ def inject_css():
     """, unsafe_allow_html=True)
 
 def pill_class(category: str):
+    """
+    Map kategori ke class CSS untuk styling pill.
+    """
     c = (category or "").lower()
+    
+    if "baik" in c:
+        return "baik"
+    if "sedang" in c:
+        return "sedang"
+    if "tidak sehat" in c and "sangat" not in c:
+        return "tidak-sehat"
+    if "sangat tidak sehat" in c:
+        return "sangat-tidak-sehat"
+    if "berbahaya" in c:
+        return "berbahaya"
+    
+    # Fallback untuk kategori bahasa Inggris (kalau masih ada)
     if "good" in c:
-        return "good"
+        return "baik"
     if "moderate" in c:
-        return "moderate"
+        return "sedang"
     if "unhealthy" in c:
-        return "unhealthy"
-    return "hazardous"
+        return "tidak-sehat"
+    if "hazardous" in c:
+        return "berbahaya"
+    
+    return "baik"
