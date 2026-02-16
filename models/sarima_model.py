@@ -1,96 +1,4 @@
-# # models/sarima_model.py
-# import pandas as pd
-# import numpy as np
-# from statsmodels.tsa.statespace.sarimax import SARIMAX
-# from utils.metrics import calc_metrics
 
-# def run_sarima_model(
-#     series: pd.Series,
-#     horizon: int = 30,
-#     test_size: int = 102,
-#     order=(1, 0, 1),
-#     seasonal_order=(0, 0, 0, 7),
-# ):
-#     s = series.dropna().astype(float)
-#     s = s[~s.index.duplicated(keep="last")]
-#     s = s.sort_index()
-
-#     if len(s) <= test_size + 10:
-#         raise ValueError("Data terlalu sedikit untuk split train test. Kurangi test_size atau tambah data.")
-
-#     train = s.iloc[:-test_size].copy()
-#     test = s.iloc[-test_size:].copy()
-
-#     model = SARIMAX(
-#         train,
-#         order=order,
-#         seasonal_order=seasonal_order,
-#         enforce_stationarity=False,
-#         enforce_invertibility=False,
-#     )
-#     fit = model.fit(disp=False)
-
-#     # =========
-#     # (A) Evaluasi murni: forecast test
-#     # =========
-#     fc_test = fit.get_forecast(steps=len(test)).predicted_mean
-#     pred_test = pd.Series(np.asarray(fc_test), index=test.index, name="test_pred")
-
-#     metrics_oos = calc_metrics(test.values, pred_test.values)
-#     metrics_oos["Model"] = f"SARIMA{order}{seasonal_order}"
-#     metrics_oos["TestSize"] = int(len(test))
-#     metrics_oos["EvalMode"] = "OOS Forecast"
-
-#     # =========
-#     # (B) Evaluasi updated: apply test (ini yang biasanya jadi 15.96%)
-#     # =========
-#     metrics_updated = None
-#     fitted_on_test = None
-#     try:
-#         updated = fit.apply(test)
-#         fitted_on_test = pd.Series(updated.fittedvalues, index=test.index, name="fitted_on_test")
-
-#         # jaga-jaga jika panjangnya tidak sama
-#         if len(fitted_on_test) != len(test):
-#             fitted_on_test = fitted_on_test.iloc[-len(test):]
-#             fitted_on_test.index = test.index
-
-#         metrics_updated = calc_metrics(test.values, fitted_on_test.values)
-#         metrics_updated["Model"] = f"SARIMA{order}{seasonal_order}"
-#         metrics_updated["TestSize"] = int(len(test))
-#         metrics_updated["EvalMode"] = "Updated Apply"
-#     except Exception:
-#         metrics_updated = None
-#         fitted_on_test = None
-
-#     # =========
-#     # Forecast future pakai full refit
-#     # =========
-#     model_full = SARIMAX(
-#         s,
-#         order=order,
-#         seasonal_order=seasonal_order,
-#         enforce_stationarity=False,
-#         enforce_invertibility=False,
-#     )
-#     fit_full = model_full.fit(disp=False)
-
-#     future_mean = fit_full.get_forecast(steps=horizon).predicted_mean
-#     future_index = pd.date_range(start=s.index[-1] + pd.Timedelta(days=1), periods=horizon, freq="D")
-#     future = pd.Series(np.asarray(future_mean), index=future_index, name="forecast")
-
-#     return {
-#         "forecast": future,
-#         "test_pred": pred_test,
-#         "train": train,
-#         "test": test,
-#         "metrics_oos": metrics_oos,
-#         "metrics_updated": metrics_updated,
-#         "fitted_on_test": fitted_on_test,
-#         "params": {"order": order, "seasonal_order": seasonal_order},
-#     }
-
-# models/sarima_model.py
 import pandas as pd
 import numpy as np
 from statsmodels.tsa.statespace.sarimax import SARIMAX
@@ -109,7 +17,7 @@ def run_sarima_model(
     1. OOS Forecast: evaluasi murni tanpa update (biasanya MAPE lebih tinggi)
     2. Updated Apply: evaluasi dengan update model pada test data (biasanya MAPE lebih rendah)
     
-    Parameters:
+    Parameterssss:
     -----------
     use_updated_metrics : bool, default=True
         Jika True, gunakan metrik dari Updated Apply sebagai metrik utama
