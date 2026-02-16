@@ -39,23 +39,26 @@ def load_data(path: str) -> pd.DataFrame:
 # =========================
 st.sidebar.markdown("### Sistem PM2.5")
 
-location = st.sidebar.selectbox("Lokasi", ["Jakarta"])
+# Menampilkan lokasi secara statis di sidebar
+st.sidebar.markdown(f"### 📍 Lokasi: **Depok**")
+location = "Depok"
 model_choice = st.sidebar.radio("Pilih Model", ["SARIMA", "ARIMA", "ETS"], index=0)
 
-test_size = st.sidebar.number_input(
-    "Window Test (hari)",
-    min_value=30,
-    max_value=180,
-    value=102,
-    step=1
-)
+# KUNCI NILAI DI SINI (Variabel Statis)
+# Sesuai permintaan: 80/20 rasio (102 hari test) dan horizon 30 hari
+test_size = 102 
+horizon = 30
 
-horizon = st.sidebar.slider("Horizon Peramalan (hari)", 7, 30, 30)
+# Tampilkan informasi statis di sidebar agar user tetap tahu settingannya
+st.sidebar.info(f"""
+**Konfigurasi Terkunci:**
+- Window Test: {test_size} hari (20%)
+- Horizon Peramalan: {horizon} hari
+""")
 
 if st.sidebar.button("Hapus Cache"):
     st.cache_data.clear()
     st.rerun()
-
 
 # =========================
 # LOAD DATA
@@ -352,12 +355,6 @@ with tabs[0]:
         st.markdown(f"""
         <div class="card">
           <p class="title" style="margin:0;">Risiko & Peringatan</p>
-          <div style="margin-top:10px; padding:10px 12px; border-radius:14px;
-                      background: rgba(245,158,11,0.16);
-                      border: 1px solid rgba(245,158,11,0.25);">
-            <div style="font-weight:900; font-size:1.1rem;">{level} {prob:.0f}%</div>
-            <div class="muted">Probabilitas melebihi ambang batas dalam {int(horizon)} hari ke depan</div>
-          </div>
           <div style="margin-top:10px;">
             <div>• {note1}</div>
             {f"<div>• {note2}</div>" if note2 else ""}
