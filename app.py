@@ -39,17 +39,13 @@ def load_data(path: str) -> pd.DataFrame:
 # =========================
 st.sidebar.markdown("### Sistem PM2.5")
 
-# Menampilkan lokasi secara statis di sidebar
 st.sidebar.markdown(f"### 📍 Lokasi: **Depok**")
 location = "Depok"
 model_choice = st.sidebar.radio("Pilih Model", ["SARIMA", "ARIMA", "ETS"], index=0)
 
-# KUNCI NILAI DI SINI (Variabel Statis)
-# Sesuai permintaan: 80/20 rasio (102 hari test) dan horizon 30 hari
 test_size = 102 
 horizon = 30
 
-# Tampilkan informasi statis di sidebar agar user tetap tahu settingannya
 st.sidebar.info(f"""
 **Konfigurasi Terkunci:**
 - Window Test: {test_size} hari (20%)
@@ -245,7 +241,7 @@ with tabs[0]:
     st.markdown(f"### {location}")
     
     # =========================
-    # AIR QUALITY CATEGORIES SECTION (BARU!)
+    # AIR QUALITY CATEGORIES SECTION
     # =========================
     st.markdown("### 📊 Kategori Kualitas Udara")
     
@@ -316,7 +312,6 @@ with tabs[0]:
         tiles = st.columns(7, gap="small")
         f7 = forecast.head(7)
         
-        # Mapping hari ke Bahasa Indonesia
         day_mapping = {
             "Mon": "Sen", "Tue": "Sel", "Wed": "Rab",
             "Thu": "Kam", "Fri": "Jum", "Sat": "Sab", "Sun": "Min"
@@ -384,11 +379,106 @@ with tabs[1]:
 
 
 # =========================
-# TAB 2 MODEL COMPARISON
+# TAB 2 MODEL COMPARISON (PENJELASAN USER-FRIENDLY!)
 # =========================
 with tabs[2]:
-    st.subheader("Perbandingan Model")
-
+    st.markdown("## 🔬 Perbandingan Model Forecasting")
+    
+    # PENJELASAN UMUM
+    st.markdown("""
+    ### 📘 Apa Itu Perbandingan Model?
+    
+    Sistem ini menggunakan **3 model berbeda** untuk meramalkan PM2.5. Setiap model punya cara kerja yang berbeda 
+    dalam menganalisis pola data masa lalu untuk prediksi masa depan. Di sini kami bandingkan performanya 
+    supaya Anda bisa tahu model mana yang paling akurat untuk kondisi Depok.
+    """)
+    
+    # PENJELASAN MODEL
+    col1, col2, col3 = st.columns(3, gap="medium")
+    
+    with col1:
+        st.markdown("""
+        <div style="background: #e3f2fd; padding: 16px; border-radius: 12px; border-left: 4px solid #2196f3;">
+            <h4 style="margin-top: 0; color: #1565c0;">🔵 SARIMA</h4>
+            <p style="font-size: 0.9rem; margin-bottom: 8px;"><strong>Seasonal ARIMA</strong></p>
+            <p style="font-size: 0.85rem; color: #424242;">
+                Model yang <strong>paling kompleks</strong>. Bisa menangkap pola musiman (contoh: polusi lebih tinggi di musim tertentu). 
+                Cocok untuk data dengan pola berulang yang jelas.
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    with col2:
+        st.markdown("""
+        <div style="background: #fff3e0; padding: 16px; border-radius: 12px; border-left: 4px solid #ff9800;">
+            <h4 style="margin-top: 0; color: #e65100;">🟠 ARIMA</h4>
+            <p style="font-size: 0.9rem; margin-bottom: 8px;"><strong>AutoRegressive Integrated Moving Average</strong></p>
+            <p style="font-size: 0.85rem; color: #424242;">
+                Model <strong>standar</strong> untuk time series. Lebih sederhana dari SARIMA, fokus ke tren umum 
+                tanpa memperhitungkan pola musiman yang rumit.
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    with col3:
+        st.markdown("""
+        <div style="background: #f3e5f5; padding: 16px; border-radius: 12px; border-left: 4px solid #9c27b0;">
+            <h4 style="margin-top: 0; color: #6a1b9a;">🟣 ETS</h4>
+            <p style="font-size: 0.9rem; margin-bottom: 8px;"><strong>Exponential Smoothing</strong></p>
+            <p style="font-size: 0.85rem; color: #424242;">
+                Model yang memberikan <strong>bobot lebih besar</strong> pada data terbaru. 
+                Lebih responsif terhadap perubahan mendadak dalam kualitas udara.
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    st.markdown("<br>", unsafe_allow_html=True)
+    
+    # PENJELASAN METRIK
+    st.markdown("""
+    ### 📊 Cara Membaca Metrik Evaluasi
+    
+    Sistem menggunakan 3 metrik untuk menilai akurasi model. **Semakin kecil nilainya, semakin bagus!**
+    """)
+    
+    metric_cols = st.columns(3, gap="medium")
+    
+    with metric_cols[0]:
+        st.markdown("""
+        <div style="background: #e8f5e9; padding: 12px; border-radius: 8px;">
+            <h5 style="margin: 0; color: #2e7d32;">📐 MAE (Mean Absolute Error)</h5>
+            <p style="font-size: 0.85rem; margin-top: 8px; color: #424242;">
+                <strong>Rata-rata selisih</strong> antara prediksi dan kenyataan (dalam µg/m³).<br>
+                <em>Contoh: MAE = 7.5 artinya ramalan rata-rata meleset 7.5 µg/m³</em>
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    with metric_cols[1]:
+        st.markdown("""
+        <div style="background: #fff9c4; padding: 12px; border-radius: 8px;">
+            <h5 style="margin: 0; color: #f57f17;">📏 RMSE (Root Mean Squared Error)</h5>
+            <p style="font-size: 0.85rem; margin-top: 8px; color: #424242;">
+                Mirip MAE tapi lebih <strong>sensitif terhadap error besar</strong>.<br>
+                <em>Nilai RMSE yang tinggi = ada ramalan yang sangat meleset</em>
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    with metric_cols[2]:
+        st.markdown("""
+        <div style="background: #fce4ec; padding: 12px; border-radius: 8px;">
+            <h5 style="margin: 0; color: #c2185b;">📈 MAPE (Mean Absolute Percentage Error)</h5>
+            <p style="font-size: 0.85rem; margin-top: 8px; color: #424242;">
+                Error dalam <strong>bentuk persentase</strong> (%).<br>
+                <em>Contoh: MAPE = 15% artinya ramalan rata-rata meleset 15% dari nilai sebenarnya</em>
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    st.markdown("<br>", unsafe_allow_html=True)
+    
+    # RUN COMPARISON
     sar = run_model_cached("SARIMA", y, int(horizon), int(test_size))
     ari = run_model_cached("ARIMA", y, int(horizon), int(test_size))
     ets = run_model_cached("ETS", y, int(horizon), int(test_size))
@@ -400,9 +490,46 @@ with tabs[2]:
     comp = pd.DataFrame([sar_metrics, ari_metrics, ets_metrics])
     cols = [c for c in ["Model", "MAE", "RMSE", "MAPE", "TestSize"] if c in comp.columns]
     
+    # HIGHLIGHT BEST MODEL
+    st.markdown("### 🏆 Hasil Perbandingan")
+    
+    # Cari model terbaik berdasarkan MAPE
+    best_idx = comp['MAPE'].idxmin()
+    best_model = comp.loc[best_idx, 'Model']
+    best_mape = comp.loc[best_idx, 'MAPE']
+    
+    st.success(f"""
+    **Model Terbaik:** {best_model} dengan MAPE {best_mape:.2f}%
+    
+    Artinya: Model {best_model} memiliki tingkat kesalahan paling rendah ({best_mape:.2f}%) 
+    dalam meramalkan PM2.5 untuk kondisi Depok.
+    """)
+    
     st.dataframe(comp[cols], use_container_width=True)
-
-    with st.expander("🔍 Debug: Detail Metrik Model", expanded=False):
+    
+    # INTERPRETASI
+    st.markdown("### 💡 Cara Menggunakan Informasi Ini")
+    
+    interpretation_cols = st.columns(2, gap="large")
+    
+    with interpretation_cols[0]:
+        st.markdown("""
+        #### Untuk Pengambilan Keputusan:
+        1. **Pilih model dengan MAPE terendah** untuk ramalan yang paling akurat
+        2. **Perhatikan MAE** untuk tahu seberapa jauh ramalan bisa meleset (dalam µg/m³)
+        3. Jika RMSE jauh lebih besar dari MAE, berarti ada beberapa hari di mana ramalan sangat meleset
+        """)
+    
+    with interpretation_cols[1]:
+        st.markdown("""
+        #### Tips Penggunaan:
+        - **MAPE < 20%** → Model sangat baik untuk digunakan
+        - **MAPE 20-30%** → Model cukup baik, tapi perlu hati-hati
+        - **MAPE > 30%** → Model kurang akurat, pertimbangkan faktor lain
+        """)
+    
+    # DEBUG (OPSIONAL)
+    with st.expander("🔍 Debug: Detail Metrik Model (Untuk Teknis)", expanded=False):
         st.write("**Metrik SARIMA:**")
         st.json({
             "Ada 'metrics'": "metrics" in sar,
