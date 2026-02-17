@@ -48,13 +48,9 @@ horizon = 30
 
 st.sidebar.info(f"""
 **Konfigurasi Terkunci:**
-- Window Test: {test_size} hari (20%)
+- Window Test: {test_size} hari
 - Horizon Peramalan: {horizon} hari
 """)
-
-if st.sidebar.button("Hapus Cache"):
-    st.cache_data.clear()
-    st.rerun()
 
 # =========================
 # LOAD DATA
