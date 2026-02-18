@@ -72,34 +72,23 @@ st.sidebar.caption(f"Periode: {df.index.min().date()} sampai {df.index.max().dat
 # HELPER: Ekstrak metrik yang konsisten
 # =========================
 def extract_metrics(result: dict, model_name: str) -> dict:
-    if model_name == "ARIMA":
-        if "metrics_updated" in result and result["metrics_updated"] is not None:
-            metrics = result["metrics_updated"].copy()
-            return metrics
-        
-        if "metrics" in result and result["metrics"] is not None:
-            metrics = result["metrics"].copy()
-            metrics["MAPE"] = 16.97
-            metrics["MAE"] = 7.65
-            metrics["RMSE"] = 9.75
-            return metrics
-    
-    if "metrics_updated" in result and result["metrics_updated"] is not None:
-        return result["metrics_updated"].copy()
-    
+    """
+    Ekstrak metrik dari hasil model.
+    Prioritas: metrics (primary) > metrics_updated > metrics_oos
+    """
+    # Prioritas 1: Gunakan 'metrics' sebagai primary metrics (sudah dipilih oleh model)
     if "metrics" in result and result["metrics"] is not None:
         return result["metrics"].copy()
     
+    # Prioritas 2: Fallback ke metrics_updated jika ada
+    if "metrics_updated" in result and result["metrics_updated"] is not None:
+        return result["metrics_updated"].copy()
+    
+    # Prioritas 3: Fallback ke metrics_oos jika ada
     if "metrics_oos" in result and result["metrics_oos"] is not None:
         return result["metrics_oos"].copy()
     
-    return {
-        "Model": model_name,
-        "MAE": None,
-        "RMSE": None,
-        "MAPE": None,
-        "TestSize": None
-    }
+    # Fallback terakhir: return empty metrics
 
 
 # =========================
@@ -484,7 +473,7 @@ with tabs[2]:
     ets_metrics = extract_metrics(ets, "ETS")
 
     comp = pd.DataFrame([sar_metrics, ari_metrics, ets_metrics])
-    cols = [c for c in ["Model", "MAE", "RMSE", "MAPE", "TestSize"] if c in comp.columns]
+    cols = [c for c in ["Model", "MAE", "RMSE", "MSE", "MAPE", "TestSize"] if c in comp.columns]
     
     # HIGHLIGHT BEST MODEL
     st.markdown("### 🏆 Hasil Perbandingan")
