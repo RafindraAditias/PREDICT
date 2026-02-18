@@ -12,6 +12,7 @@ def run_ets_model(
     seasonal="add",
     seasonal_periods=30,
     initialization_method="estimated"
+    
 ):
     s = series.dropna().astype(float)
     s = s[~s.index.duplicated(keep="last")]
@@ -28,6 +29,7 @@ def run_ets_model(
         trend=trend,
         seasonal=seasonal,
         seasonal_periods=int(seasonal_periods),
+        initialization_method=initialization_method
     )
     fit = model.fit(optimized=True)
 
@@ -43,6 +45,7 @@ def run_ets_model(
         trend=trend,
         seasonal=seasonal,
         seasonal_periods=int(seasonal_periods),
+        initialization_method=initialization_method
     )
     fit_full = model_full.fit(optimized=True)
 
