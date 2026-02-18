@@ -14,7 +14,7 @@ from utils.ui import inject_css, pill_class
 # =========================
 # PAGE CONFIG MUST BE FIRST
 # =========================
-st.set_page_config(page_title="Sistem Peringatan Dini & Peramalan PM2.5", layout="wide")
+st.set_page_config(page_title="Sistem Peringatan Dini & Peramalan PM2.5.", layout="wide")
 
 # =========================
 # DATA LOADER
