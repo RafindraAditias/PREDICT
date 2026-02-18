@@ -5,7 +5,7 @@ from utils.metrics import calc_metrics
 def run_arima_model(series: pd.Series, horizon: int = 30, test_size: int = 90, order=(1, 0, 1)):
     s = series.dropna().astype(float).sort_index()
     if len(s) <= test_size + 10:
-        raise ValueError("Data terlalu sedikit untuk split train test. Kurangi test_size atau tambah data.")
+        raise ValueError("Data terlalu sedikit untuk split train test. Kurangi test_size atau tambah data..")
 
     train = s.iloc[:-test_size]
     test = s.iloc[-test_size:]
