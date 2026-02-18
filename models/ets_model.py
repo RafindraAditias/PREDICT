@@ -10,7 +10,7 @@ def run_ets_model(
     test_size: int = 102,
     trend="add",
     seasonal="add",
-    seasonal_periods=7,
+    seasonal_periods=30,
 ):
     s = series.dropna().astype(float)
     s = s[~s.index.duplicated(keep="last")]

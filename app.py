@@ -117,6 +117,7 @@ def run_model_cached(model_name: str, y_series: pd.Series, horizon_days: int, te
             y_series,
             horizon=int(horizon_days),
             test_size=int(test_days),
+            use_updated_metrics=True,
         )
 
     return run_ets_model(

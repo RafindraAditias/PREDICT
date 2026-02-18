@@ -10,7 +10,7 @@ def run_sarima_model(
     test_size: int = 102,
     order=(1, 0, 1),
     seasonal_order=(0, 0, 0, 30),
-    use_updated_metrics=True,  # NEW: parameter untuk memilih metrik mana yang digunakan
+    use_updated_metrics=True,  
 ):
     """
     Menjalankan model SARIMA dengan dua mode evaluasi:
