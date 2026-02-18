@@ -11,6 +11,7 @@ def run_ets_model(
     trend="add",
     seasonal="add",
     seasonal_periods=30,
+    initialization_method="estimated"
 ):
     s = series.dropna().astype(float)
     s = s[~s.index.duplicated(keep="last")]
