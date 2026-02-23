@@ -68,7 +68,6 @@ y = df["PM2.5"].astype(float)
 st.sidebar.success(f"Dataset terbaca: {len(df)} baris")
 st.sidebar.caption(f"Periode: {df.index.min().date()} sampai {df.index.max().date()}")
 
-
 # =========================
 # HELPER: Ekstrak metrik yang konsisten
 # =========================
@@ -121,15 +120,14 @@ def run_model_cached(model_name: str, y_series: pd.Series, horizon_days: int, te
             use_updated_metrics=True,
         )
 
-    if model_name == "ETS":
-        return run_ets_model(
-            y_series,
-            horizon=int(horizon_days),
-            test_size=int(test_days),
-            trend="add",
-            seasonal="add",
-            seasonal_periods=30,
-        )
+    return run_ets_model(
+        y_series,
+        horizon=int(horizon_days),
+        test_size=int(test_days),
+        trend="add",
+        seasonal="add",
+        seasonal_periods=30,
+    )
 
 
 # =========================

@@ -11,7 +11,11 @@ def run_ets_model(
     trend="add",
     seasonal="add",
     seasonal_periods=30,
-    initialization_method="estimated"
+    initialization_method="estimated",
+    # Tambahkan parameter ini untuk reproducibility
+    smoothing_level=None,      # alpha
+    smoothing_trend=None,      # beta  
+    smoothing_seasonal=None,   # gamma
     
 ):
     s = series.dropna().astype(float)
@@ -31,7 +35,17 @@ def run_ets_model(
         seasonal_periods=int(seasonal_periods),
         initialization_method=initialization_method
     )
-    fit = model.fit(optimized=True)
+    fit = model.fit(
+        optimized=True,
+        smoothing_level=smoothing_level,
+        smoothing_trend=smoothing_trend,
+        smoothing_seasonal=smoothing_seasonal,
+        )
+    
+    print("smoothing_level (alpha):", fit.params['smoothing_level'])
+    print("smoothing_trend (beta):", fit.params['smoothing_trend'])
+    print("smoothing_seasonal (gamma):", fit.params['smoothing_seasonal'])
+    print("initial_level:", fit.params['initial_level'])
 
     pred_test = fit.forecast(len(test))
     pred_test = pd.Series(np.asarray(pred_test), index=test.index, name="test_pred")
