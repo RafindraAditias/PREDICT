@@ -120,14 +120,15 @@ def run_model_cached(model_name: str, y_series: pd.Series, horizon_days: int, te
             use_updated_metrics=True,
         )
 
-    return run_ets_model(
-        y_series,
-        horizon=int(horizon_days),
-        test_size=int(test_days),
-        trend="add",
-        seasonal="add",
-        seasonal_periods=30,
-    )
+    if model_name == "ETS":
+        return run_ets_model(
+            y_series,
+            horizon=int(horizon_days),
+            test_size=int(test_days),
+            trend="add",
+            seasonal="add",
+            seasonal_periods=30,
+        )
 
 
 # =========================
