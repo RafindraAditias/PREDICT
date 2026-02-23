@@ -68,6 +68,7 @@ y = df["PM2.5"].astype(float)
 st.sidebar.success(f"Dataset terbaca: {len(df)} baris")
 st.sidebar.caption(f"Periode: {df.index.min().date()} sampai {df.index.max().date()}")
 
+
 # =========================
 # HELPER: Ekstrak metrik yang konsisten
 # =========================
